@@ -12,7 +12,7 @@ PhishGuard is a security awareness training tool designed to test employee vigil
 - Track improvement over time
 
 ## Tech Stack
-- **Frontend**: React 18+ with TypeScript
+- **Frontend**: React 19 + TypeScript + Vite
 - **Backend/Database**: Supabase (Auth, Database, Real-time)
 - **Styling**: Tailwind CSS
 - **QR Generation**: qrcode.react
@@ -29,19 +29,12 @@ PhishGuard is a security awareness training tool designed to test employee vigil
 ## Project Structure
 ```
 phishguard/
+├── index.html                # Vite entry HTML
 ├── src/
-│   ├── components/
-│   │   ├── LandingPage.tsx       # WiFi connection form
-│   │   ├── AdminDashboard.tsx    # Results viewer
-│   │   └── QRGenerator.tsx       # Generate QR codes
-│   ├── hooks/
-│   │   └── useSupabase.ts
-│   ├── types/
-│   │   └── index.ts
-│   ├── utils/
-│   │   └── supabase.ts
-│   └── App.tsx
-├── public/
+│   ├── App.tsx
+│   ├── main.tsx              # Vite root render
+│   └── ...
+├── public/                   # Static assets copied as-is
 └── README.md
 ```
 
@@ -80,13 +73,16 @@ npm install
 3. Environment Variables
 Create `.env.local`:
 ```
-REACT_APP_SUPABASE_URL=your_supabase_url
-REACT_APP_SUPABASE_ANON_KEY=your_anon_key
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
 
-4. Run Development Server
+4. Run Development/Test/Build
 ```bash
-npm run dev
+npm run dev      # Start Vite dev server
+npm run test     # Run Vitest + Testing Library
+npm run build    # Type-check and bundle for production
+npm run preview  # Preview production build locally
 ```
 
 ## QR Code Setup
