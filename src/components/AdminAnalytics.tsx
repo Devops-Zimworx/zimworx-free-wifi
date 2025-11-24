@@ -119,6 +119,34 @@ export function AdminAnalytics({ submissions }: AdminAnalyticsProps) {
     });
   }, [submissions]);
 
+  // Location distribution data for bar chart
+  const locationData = useMemo(() => {
+    const locationCounts: { [key: string]: { variantA: number; variantB: number } } = {};
+
+    submissions.forEach((s) => {
+      const location = s.locationTag || 'Unknown';
+      if (!locationCounts[location]) {
+        locationCounts[location] = { variantA: 0, variantB: 0 };
+      }
+
+      if (s.variant === 'variant_a') {
+        locationCounts[location].variantA++;
+      } else {
+        locationCounts[location].variantB++;
+      }
+    });
+
+    // Convert to array and sort by total count (descending)
+    return Object.entries(locationCounts)
+      .map(([location, counts]) => ({
+        location,
+        'Variant A': counts.variantA,
+        'Variant B': counts.variantB,
+        total: counts.variantA + counts.variantB,
+      }))
+      .sort((a, b) => b.total - a.total);
+  }, [submissions]);
+
   // Summary stats
   const stats = useMemo(() => {
     const total = submissions.length;
@@ -131,6 +159,10 @@ export function AdminAnalytics({ submissions }: AdminAnalyticsProps) {
       (s) => new Date(s.timestamp) >= today
     ).length;
 
+    // Get top location
+    const topLocation = locationData.length > 0 ? locationData[0].location : 'N/A';
+    const uniqueLocations = locationData.length;
+
     return {
       total,
       variantA,
@@ -138,8 +170,10 @@ export function AdminAnalytics({ submissions }: AdminAnalyticsProps) {
       variantAPercent: total > 0 ? ((variantA / total) * 100).toFixed(1) : '0',
       variantBPercent: total > 0 ? ((variantB / total) * 100).toFixed(1) : '0',
       todayCount,
+      topLocation,
+      uniqueLocations,
     };
-  }, [submissions]);
+  }, [submissions, locationData]);
 
   if (submissions.length === 0) {
     return (
@@ -184,6 +218,14 @@ export function AdminAnalytics({ submissions }: AdminAnalyticsProps) {
         <div className="summary-card">
           <h3>Today</h3>
           <p className="summary-value">{stats.todayCount}</p>
+        </div>
+        <div className="summary-card">
+          <h3>Top Location</h3>
+          <p className="summary-value summary-value-small">{stats.topLocation}</p>
+        </div>
+        <div className="summary-card">
+          <h3>Unique Locations</h3>
+          <p className="summary-value">{stats.uniqueLocations}</p>
         </div>
       </div>
 
@@ -254,6 +296,22 @@ export function AdminAnalytics({ submissions }: AdminAnalyticsProps) {
               <Legend />
               <Bar dataKey="Variant A" fill={COLORS.variant_a} />
               <Bar dataKey="Variant B" fill={COLORS.variant_b} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Bar Chart - Location Distribution */}
+        <div className="chart-card chart-card-wide">
+          <h3 className="chart-title">Submissions by Location</h3>
+          <ResponsiveContainer width="100%" height={Math.max(300, locationData.length * 40)}>
+            <BarChart data={locationData} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" />
+              <YAxis dataKey="location" type="category" width={100} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="Variant A" fill={COLORS.variant_a} stackId="a" />
+              <Bar dataKey="Variant B" fill={COLORS.variant_b} stackId="a" />
             </BarChart>
           </ResponsiveContainer>
         </div>

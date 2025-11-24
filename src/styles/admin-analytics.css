@@ -55,6 +55,10 @@
   margin: 0;
 }
 
+.summary-value-small {
+  font-size: 1.25rem;
+}
+
 .summary-percent {
   font-size: 0.875rem;
   font-weight: 500;
