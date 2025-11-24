@@ -13,6 +13,14 @@ export function AdminLogin() {
   const { signIn } = useAuth();
 
   useEffect(() => {
+    // I'm logging whenever the admin login route mounts so I can confirm routing works in production.
+    console.info("[AdminLogin] mounted", {
+      path: window.location.pathname,
+      timestamp: new Date().toISOString(),
+    });
+  }, []);
+
+  useEffect(() => {
     if (!headerRef.current || !formRef.current) {
       return;
     }
