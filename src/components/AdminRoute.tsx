@@ -4,6 +4,10 @@ import { AdminDashboard } from './AdminDashboard';
 import { useSupabaseClient } from '../hooks/useSupabaseClient';
 import { useAuth } from '../contexts/AuthContext';
 import type { SubmissionRecord } from '../types';
+import {
+  mapSubmissionArray,
+  mapSubmissionFromDb,
+} from '../utils/submissionMapper';
 
 export function AdminRoute() {
   const supabase = useSupabaseClient();
@@ -29,7 +33,13 @@ export function AdminRoute() {
         if (error) {
           console.error('Failed to fetch submissions', error);
         } else {
-          setSubmissions((data as SubmissionRecord[]) || []);
+          console.debug('[AdminRoute.fetch] Supabase rows preview', (data || [])
+            .slice(0, 3)
+            .map((row) => ({
+              id: row.id,
+              location_tag: row.location_tag,
+            })));
+          setSubmissions(mapSubmissionArray(data as any));
         }
       } catch (error) {
         console.error('Error fetching submissions', error);
@@ -57,12 +67,20 @@ export function AdminRoute() {
         (payload) => {
           console.log('Real-time update:', payload);
 
+          const mappedNew = payload.new ? mapSubmissionFromDb(payload.new as any) : null;
+
           if (payload.eventType === 'INSERT') {
-            setSubmissions((prev) => [payload.new as SubmissionRecord, ...prev]);
+            if (mappedNew) {
+              console.debug('[AdminRoute.rt] mapped insert', {
+                id: mappedNew.id,
+                locationTag: mappedNew.locationTag,
+              });
+              setSubmissions((prev) => [mappedNew, ...prev]);
+            }
           } else if (payload.eventType === 'UPDATE') {
             setSubmissions((prev) =>
               prev.map((sub) =>
-                sub.id === payload.new.id ? (payload.new as SubmissionRecord) : sub
+                sub.id === payload.new.id && mappedNew ? mappedNew : sub
               )
             );
           } else if (payload.eventType === 'DELETE') {
