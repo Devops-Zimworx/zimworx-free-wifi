@@ -25,4 +25,22 @@ export type LocationStat = {
   count: number;
 };
 
+// Submission filters for querying
+export type SubmissionFilters = {
+  variant?: Variant;
+  startDate?: string;
+  endDate?: string;
+  locationTag?: string;
+  limit?: number;
+  offset?: number;
+};
+
+// QR Source type for tracking where submission came from
+export type QRSource = 'safe' | 'malicious';
+
+// Form data for submissions
+export type SubmissionFormData = {
+  email: string;
+};
+
 // TODO: I will keep expanding these types as we lock the Supabase schema down.
