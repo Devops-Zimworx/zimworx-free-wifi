@@ -1,25 +1,329 @@
+/* WiFi Portal Container */
+.portal-container {
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* WiFi Portal Base Styles */
 .wifi-portal {
-  display: grid;
-  gap: 1.5rem;
-  padding: 2rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(15, 23, 42, 0.1);
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
 }
 
+@media (max-width: 640px) {
+  .wifi-portal {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+  }
+}
+
+/* Variant A: Professional Guest WiFi (Light Theme) */
 .wifi-portal--variant_a {
-  background: radial-gradient(circle at top, #f8fafc, #e2e8f0);
-  color: #0f172a;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #1e293b;
 }
 
+.wifi-portal--variant_a .portal-button {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #ffffff;
+}
+
+.wifi-portal--variant_a .portal-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+/* Variant B: Executive WiFi (Dark/Bold Theme) */
 .wifi-portal--variant_b {
-  background: linear-gradient(135deg, #111827, #0f766e);
-  color: #e2e8f0;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  color: #f1f5f9;
 }
 
+.wifi-portal--variant_b .portal-button {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
+}
+
+.wifi-portal--variant_b .portal-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0891b2, #0e7490);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.5);
+}
+
+.wifi-portal--variant_b .form-label,
+.wifi-portal--variant_b .form-label-optional {
+  color: #cbd5e1;
+}
+
+.wifi-portal--variant_b .form-input {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(148, 163, 184, 0.3);
+  color: #f1f5f9;
+}
+
+.wifi-portal--variant_b .form-input:focus {
+  border-color: #06b6d4;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
+.wifi-portal--variant_b .form-input::placeholder {
+  color: #64748b;
+}
+
+.wifi-portal--variant_b .portal-footer-text {
+  color: #94a3b8;
+}
+
+/* Portal Header */
+.portal-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.wifi-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.brand-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: linear-gradient(135deg, #6366f1, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.portal-headline {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  line-height: 1.3;
+}
+
+.portal-body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.85;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .portal-headline {
+    font-size: 1.25rem;
+  }
+
+  .portal-body {
+    font-size: 0.875rem;
+  }
+}
+
+/* Form Styles */
+.portal-form-wifi {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.form-label-optional {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.form-input {
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Error Message */
+.portal-error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.error-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.error-text {
+  flex: 1;
+}
+
+/* Submit Button */
+.portal-button {
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  margin-top: 0.5rem;
+}
+
+.portal-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Loading Spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Footer Text */
+.portal-footer-text {
+  font-size: 0.75rem;
+  text-align: center;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Trust Badges */
+.trust-badges {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  padding: 0 1rem;
+}
+
+.trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.badge-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+  .trust-badges {
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .trust-badge {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Success Message Styles */
 .success-message {
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px dashed rgba(15, 23, 42, 0.2);
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 2.5rem;
+  border-radius: 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
-/* TODO: I want to move this styling into Tailwind once tokens are locked in. */
+.success-message h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #15803d;
+  margin: 0 0 0.75rem;
+}
+
+.success-message p {
+  font-size: 1rem;
+  color: #166534;
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.success-message__email {
+  margin-top: 1.5rem;
+  padding: 0.875rem 1rem;
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 10px;
+  font-weight: 600;
+  color: #15803d;
+}
+
+@media (max-width: 640px) {
+  .success-message {
+    padding: 2rem 1.5rem;
+  }
+
+  .success-message h2 {
+    font-size: 1.25rem;
+  }
+}

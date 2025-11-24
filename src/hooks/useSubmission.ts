@@ -20,10 +20,24 @@ export function useSubmission() {
       try {
         setState('submitting');
         setErrorMessage(null);
-        // TODO: I want to extend this to capture IP/user agent server-side later.
+
+        // Capture user agent from browser
+        const userAgent = navigator.userAgent;
+
+        // Note: IP address capture requires server-side implementation or third-party service
+        // For now, we'll let Supabase RLS or edge functions handle IP on the backend
+        // Map camelCase payload to snake_case database columns
+        const dbPayload = {
+          email: payload.email,
+          variant: payload.variant,
+          location_tag: payload.locationTag || null,
+          user_agent: userAgent,
+          ip_address: null, // To be captured server-side
+        };
+
         const { data, error } = await supabase
           .from('phishing_submissions')
-          .insert(payload)
+          .insert(dbPayload)
           .select()
           .single();
 
