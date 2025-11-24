@@ -17,8 +17,6 @@ const ZIMWORX_LOCATIONS = [
   '13th Floor',
   '14th Floor',
   'Basement',
-  'Lobby',
-  'Parking',
 ];
 
 const VARIANT_INFO: Record<Variant, { name: string; description: string; color: string }> = {
@@ -42,7 +40,6 @@ export function QRGenerator({ baseUrl: initialBaseUrl }: QRGeneratorProps) {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([
     'The Grind',
     '2nd Floor',
-    'Lobby',
   ]);
   const [customLocation, setCustomLocation] = useState('');
 
