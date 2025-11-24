@@ -279,6 +279,7 @@
   flex-direction: column;
   gap: 8px;
   margin-bottom: 20px;
+  text-align: left;
 }
 
 .admin-login label span {
@@ -294,15 +295,16 @@
   border-radius: 12px;
   font-size: 1rem;
   color: #0f172a;
-  background: #f8fafc;
+  background: #ffffff;
   transition: all 200ms ease;
+  width: 100%;
 }
 
 .admin-login input:focus {
   outline: none;
-  border-color: #0f172a;
+  border-color: #3b82f6;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .admin-login input:disabled {
@@ -317,7 +319,7 @@
 .admin-login button {
   width: 100%;
   padding: 16px;
-  background: #0f172a;
+  background: #3b82f6;
   color: #ffffff;
   border: none;
   border-radius: 12px;
@@ -330,9 +332,9 @@
 }
 
 .admin-login button:hover:not(:disabled) {
-  background: #1e293b;
+  background: #2563eb;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 .admin-login button:active:not(:disabled) {
