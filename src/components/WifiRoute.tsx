@@ -27,7 +27,7 @@ function mapSourceToVariant(source: string | null): Variant {
 export function WifiRoute() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { submit } = useSubmission();
+  const { submit, state, errorMessage } = useSubmission();
 
   const source = searchParams.get('source');
   const locationTag = searchParams.get('loc') || undefined;
@@ -48,6 +48,14 @@ export function WifiRoute() {
     });
   };
 
-  return <WifiPortal variant={variant} defaultLocationTag={locationTag} onSubmit={handleSubmit} />;
+  return (
+    <WifiPortal
+      variant={variant}
+      defaultLocationTag={locationTag}
+      onSubmit={handleSubmit}
+      isSubmitting={state === 'submitting'}
+      errorMessage={errorMessage}
+    />
+  );
 }
 
