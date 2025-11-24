@@ -36,43 +36,45 @@ export function AdminLogin() {
 
   return (
     <section className="admin-login">
-      <header>
-        <h1>Admin Login</h1>
-        <p>Enter your credentials to access the dashboard.</p>
-      </header>
+      <div>
+        <header>
+          <h1>Admin Login</h1>
+          <p>Enter your credentials to access the dashboard.</p>
+        </header>
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          <span>Email</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="admin@example.com"
-            required
-            autoFocus
-            disabled={loading}
-          />
-        </label>
+        <form onSubmit={handleSubmit}>
+          {error && <div className="admin-login__error">{error}</div>}
 
-        <label>
-          <span>Password</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            required
-            disabled={loading}
-          />
-        </label>
+          <label>
+            <span>Email</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@example.com"
+              required
+              autoFocus
+              disabled={loading}
+            />
+          </label>
 
-        {error && <div className="admin-login__error">{error}</div>}
+          <label>
+            <span>Password</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+              disabled={loading}
+            />
+          </label>
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Signing in...' : 'Login'}
-        </button>
-      </form>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Signing in...' : 'Login'}
+          </button>
+        </form>
+      </div>
     </section>
   );
 }
