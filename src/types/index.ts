@@ -36,11 +36,13 @@ export type SubmissionFilters = {
 };
 
 // QR Source type for tracking where submission came from
+// Note: 'safe' maps to 'variant_a', 'malicious' maps to 'variant_b' in the database
 export type QRSource = 'safe' | 'malicious';
 
 // Form data for submissions
 export type SubmissionFormData = {
   email: string;
+  locationTag?: string; // Optional location identifier (e.g., "Building A", "Floor 2")
 };
 
 // TODO: I will keep expanding these types as we lock the Supabase schema down.

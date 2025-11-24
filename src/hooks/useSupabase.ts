@@ -8,6 +8,16 @@ import type {
   QRSource,
 } from '../types';
 
+// Default page size for pagination when limit is not specified
+const DEFAULT_PAGE_SIZE = 20;
+
+// Loading states for each operation to prevent race conditions
+export interface LoadingStates {
+  adding: boolean;
+  fetching: boolean;
+  subscribing: boolean;
+}
+
 export interface UseSupabaseReturn {
   addSubmission: (
     data: SubmissionFormData,
@@ -17,12 +27,16 @@ export interface UseSupabaseReturn {
   subscribeToSubmissions: (
     callback: (payload: SubmissionRecord) => void
   ) => () => void;
-  loading: boolean;
+  loading: LoadingStates;
   error: string | null;
 }
 
 export function useSupabase(): UseSupabaseReturn {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<LoadingStates>({
+    adding: false,
+    fetching: false,
+    subscribing: false,
+  });
   const [error, setError] = useState<string | null>(null);
 
   const addSubmission = useCallback(
@@ -30,7 +44,7 @@ export function useSupabase(): UseSupabaseReturn {
       data: SubmissionFormData,
       source: QRSource
     ): Promise<SubmissionRecord | null> => {
-      setLoading(true);
+      setLoading((prev) => ({ ...prev, adding: true }));
       setError(null);
 
       try {
@@ -39,7 +53,8 @@ export function useSupabase(): UseSupabaseReturn {
         // Capture user agent from browser
         const userAgent = navigator.userAgent;
 
-        // Determine variant based on source
+        // Map QRSource to database variant
+        // 'safe' QR codes are variant_a, 'malicious' are variant_b
         const variant = source === 'safe' ? 'variant_a' : 'variant_b';
 
         // Map to database schema (snake_case columns)
@@ -48,7 +63,7 @@ export function useSupabase(): UseSupabaseReturn {
           variant,
           user_agent: userAgent,
           ip_address: null, // To be captured server-side
-          location_tag: null, // Can be added later if needed
+          location_tag: data.locationTag || null,
         };
 
         const { data: insertedData, error: insertError } = await supabase
@@ -61,13 +76,13 @@ export function useSupabase(): UseSupabaseReturn {
           throw insertError;
         }
 
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, adding: false }));
         return insertedData as SubmissionRecord;
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Failed to add submission';
         setError(errorMessage);
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, adding: false }));
         console.error('Error adding submission:', err);
         return null;
       }
@@ -77,7 +92,7 @@ export function useSupabase(): UseSupabaseReturn {
 
   const getSubmissions = useCallback(
     async (filters?: SubmissionFilters): Promise<SubmissionRecord[]> => {
-      setLoading(true);
+      setLoading((prev) => ({ ...prev, fetching: true }));
       setError(null);
 
       try {
@@ -113,7 +128,7 @@ export function useSupabase(): UseSupabaseReturn {
           if (filters.offset) {
             query = query.range(
               filters.offset,
-              filters.offset + (filters.limit || 10) - 1
+              filters.offset + (filters.limit || DEFAULT_PAGE_SIZE) - 1
             );
           }
         }
@@ -124,13 +139,13 @@ export function useSupabase(): UseSupabaseReturn {
           throw queryError;
         }
 
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, fetching: false }));
         return (data as SubmissionRecord[]) || [];
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Failed to fetch submissions';
         setError(errorMessage);
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, fetching: false }));
         console.error('Error fetching submissions:', err);
         return [];
       }
@@ -144,6 +159,8 @@ export function useSupabase(): UseSupabaseReturn {
       let channel: RealtimeChannel | null = null;
 
       try {
+        setLoading((prev) => ({ ...prev, subscribing: true }));
+
         channel = supabase
           .channel('phishing_submissions_changes')
           .on(
@@ -159,12 +176,7 @@ export function useSupabase(): UseSupabaseReturn {
           )
           .subscribe();
 
-        // Return cleanup function
-        return () => {
-          if (channel) {
-            supabase.removeChannel(channel);
-          }
-        };
+        setLoading((prev) => ({ ...prev, subscribing: false }));
       } catch (err) {
         console.error('Error subscribing to submissions:', err);
         setError(
@@ -172,10 +184,16 @@ export function useSupabase(): UseSupabaseReturn {
             ? err.message
             : 'Failed to subscribe to real-time updates'
         );
-
-        // Return no-op cleanup function
-        return () => {};
+        setLoading((prev) => ({ ...prev, subscribing: false }));
       }
+
+      // Always return cleanup function, even if subscription failed
+      // This prevents memory leaks in all cases
+      return () => {
+        if (channel) {
+          supabase.removeChannel(channel);
+        }
+      };
     },
     []
   );
