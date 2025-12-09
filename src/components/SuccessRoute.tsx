@@ -15,7 +15,11 @@ export function SuccessRoute() {
   const email = state?.email;
   const variant = state?.variant || 'variant_a';
 
-  return <SuccessMessage variant={variant} submittedEmail={email} />;
+  return (
+    <div className="success-page-container">
+      <SuccessMessage variant={variant} submittedEmail={email} />
+    </div>
+  );
 }
 
 
