@@ -56,7 +56,7 @@ export function WifiPortal({
           <header className="portal-header">
             <div className="brand-mark">
               <div className="wifi-icon">📶</div>
-              <div className="brand-text">ZIMWORX</div>
+              <div className="brand-text">ZIMWORKS</div>
             </div>
             <h1 className="portal-headline">{copy.headline}</h1>
             <p className="portal-body">{copy.body}</p>
@@ -134,7 +134,7 @@ export function WifiPortal({
 
             {/* Footer Info */}
             <p className="portal-footer-text">
-              By connecting, you agree to Zimworx's network usage policy.
+              By connecting, you agree to Zimwork's network usage policy.
             </p>
           </form>
         </section>
